@@ -82,6 +82,32 @@ npm run build
 
 The built files will be in the `dist` directory.
 
+## Docker Deployment
+
+### Building the Docker Image
+
+```bash
+docker build -t flight-tracker-app .
+```
+
+### Running the Container
+
+```bash
+docker run -d -p 80:80 --name flight-tracker flight-tracker-app
+```
+
+The application will be available at `http://localhost`.
+
+### Environment Variables
+
+When running in Docker, you can pass environment variables using the `-e` flag:
+
+```bash
+docker run -d -p 80:80 \
+  -e VITE_WEBSOCKET_URL=ws://your-websocket-server/map-updates \
+  --name flight-tracker flight-tracker-app
+```
+
 ## Contributing
 
 We welcome contributions! Here's how you can help:
