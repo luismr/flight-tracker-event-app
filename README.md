@@ -19,15 +19,24 @@ A real-time flight tracking application built with React and TypeScript, followi
 
 ## Project Structure
 
-The project follows a domain-driven design approach with the following layers:
+The project follows a feature-based Domain-Driven Design approach where each feature is organized in its own directory with DDD layers:
 
 ```
 src/
-├── ui/           # Presentation layer components
-├── application/  # Application services and use cases
-├── domain/       # Domain entities, value objects, and business logic
-└── infrastructure/  # External services, repositories, and adapters
+├── flights/                # Flight tracking feature
+│   ├── ui/                 # Presentation components
+│   ├── application/        # Use cases and services
+│   ├── domain/             # Entities and value objects
+│   └── infrastructure/     # External services and adapters
+├── shared/                 # Shared utilities and components
+└── App.tsx                 # Application entry point
 ```
+
+Each feature follows the DDD layered architecture:
+- **UI Layer**: React components and hooks
+- **Application Layer**: Services and use cases that orchestrate domain logic
+- **Domain Layer**: Business entities, value objects, and core business rules
+- **Infrastructure Layer**: External services, repositories, and technical implementations
 
 ## Getting Started
 
