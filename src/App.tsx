@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { FlightList } from './ui/components/FlightList';
-import { FlightService } from './application/services/FlightService';
-import { WebSocketService } from './infrastructure/websocket/WebSocketService';
-import { FlightData, FlightEntity } from './domain/models/Flight';
+import { FlightList } from './flights/ui/components/FlightList';
+import { FlightService } from './flights/application/FlightService';
+import { WebSocketService } from './flights/infrastructure/websocket/WebSocketService';
+import { FlightData, FlightEntity } from './flights/domain/Flight';
 
 const AppContainer = styled.div`
   min-height: 100vh;

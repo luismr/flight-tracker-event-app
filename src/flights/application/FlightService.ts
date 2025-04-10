@@ -1,4 +1,4 @@
-import { FlightData, FlightEntity } from '../../domain/models/Flight';
+import { FlightData, FlightEntity } from '../domain/Flight';
 
 export class FlightService {
   private flights: Map<string, FlightEntity> = new Map();

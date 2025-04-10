@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FlightEntity } from '../../domain/models/Flight';
+import { FlightEntity } from '../../domain/Flight';
 
 const FlightListContainer = styled.div`
   padding: 1rem;

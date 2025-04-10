@@ -1,4 +1,4 @@
-import { FlightData } from '../../domain/models/Flight';
+import { FlightData } from '../../domain/Flight';
 
 interface WebSocketConfig {
   url: string;

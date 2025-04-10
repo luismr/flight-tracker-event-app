@@ -1,8 +1,8 @@
 # Flight Tracker Event App
 
-[![TypeScript](https://img.shields.io/badge/TypeScript-7.0.x-blue?logo=typescript)](https://www.typescriptlang.org/)
 [![Vite](https://img.shields.io/badge/Vite-5.1.x-646CFF?logo=vite)](https://vitejs.dev/)
 [![Node](https://img.shields.io/badge/Node-20.11-339933?logo=node.js)](https://nodejs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-7.0.x-blue?logo=typescript)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-18.2-61DAFB?logo=react)](https://reactjs.org/)
 
 A real-time flight tracking application built with React and TypeScript, following Domain-Driven Design principles.
