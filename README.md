@@ -7,6 +7,8 @@
 
 A real-time flight tracking application built with React and TypeScript, following Domain-Driven Design principles.
 
+![Realtime Flight Tracker Screenshot](docs/screenshot.png)  
+
 ## Tech Stack
 
 - Node.js 20.18
