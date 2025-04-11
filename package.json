@@ -15,7 +15,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "test:coverage-ci": "jest --coverage --ci"
+    "test:coverage-ci": "jest --coverage --coverageReporters=lcov --coverageReporters=text-summary"
   },
   "dependencies": {
     "@react-google-maps/api": "^2.20.6",
