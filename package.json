@@ -15,7 +15,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "test:coverage-ci": "jest --coverage --coverageReporters=lcov --coverageReporters=text-summary"
+    "test:coverage-ci": "JEST_JUNIT_OUTPUT_DIR=\"coverage\" jest --coverage --reporters=jest-junit --coverageReporters=lcov --coverageReporters=text-summary"
   },
   "dependencies": {
     "@react-google-maps/api": "^2.20.6",
@@ -45,6 +45,7 @@
     "identity-obj-proxy": "^3.0.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
+    "jest-junit": "^16.0.0",
     "ts-jest": "^29.3.1",
     "typescript": "^5.2.2",
     "vite": "^5.1.4"
