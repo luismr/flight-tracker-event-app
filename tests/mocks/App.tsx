@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { FlightList } from './flights/ui/components/FlightList';
-import { FlightService } from './flights/application/FlightService';
-import { WebSocketService } from './flights/infrastructure/websocket/WebSocketService';
-import { FlightData, FlightEntity } from './flights/domain/Flight';
-import config from './flights/infrastructure/Config';
+import { FlightList } from '../../src/flights/ui/components/FlightList';
+import { FlightService } from '../../src/flights/application/FlightService';
+import { WebSocketService } from '../../src/flights/infrastructure/websocket/WebSocketService';
+import { FlightData, FlightEntity } from '../../src/flights/domain/Flight';
 
 const AppContainer = styled.div`
   min-height: 100vh;
@@ -49,9 +48,9 @@ function App() {
   const [flightService] = useState(() => new FlightService());
   const [webSocketService] = useState(
     () => new WebSocketService(
-      config.WEBSOCKET_URL,
-      config.WEBSOCKET_RECONNECT_INTERVAL,
-      config.WEBSOCKET_MAX_RETRIES
+      'ws://test.com',
+      1000,
+      3
     )
   );
   const [flights, setFlights] = useState<FlightEntity[]>([]);
@@ -99,7 +98,7 @@ function App() {
           {connectionStatus === 'CONNECTED' ? '🟢' : connectionStatus === 'CONNECTING' ? '🟡' : '🔴'} {connectionStatus}
         </ConnectionStatus>
       </Header>
-      <FlightList flights={flights} apiKey={config.GOOGLE_MAPS_API_KEY} />
+      <FlightList flights={flights} apiKey="test-api-key" />
     </AppContainer>
   );
 }

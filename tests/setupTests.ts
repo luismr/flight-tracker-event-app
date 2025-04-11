@@ -1,16 +1,5 @@
 import '@testing-library/jest-dom';
 
-// Mock Vite's import.meta.env
-const importMetaEnv = {
-  VITE_GOOGLE_MAPS_API_KEY: 'test-api-key',
-};
-
-global.import = {
-  meta: {
-    env: importMetaEnv,
-  },
-};
-
 // Mock Google Maps API
 const google = {
   maps: {
@@ -23,4 +12,15 @@ const google = {
   },
 };
 
-global.google = google as any; 
+global.google = google as any;
+
+// Mock the Config module
+jest.mock('../src/flights/infrastructure/Config', () => ({
+  __esModule: true,
+  default: {
+    GOOGLE_MAPS_API_KEY: 'test-api-key',
+    WEBSOCKET_URL: 'ws://test.com',
+    WEBSOCKET_RECONNECT_INTERVAL: 1000,
+    WEBSOCKET_MAX_RETRIES: 3,
+  },
+})); 
