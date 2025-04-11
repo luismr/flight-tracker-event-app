@@ -9,6 +9,7 @@ export interface FlightData {
   on_ground: boolean;
   velocity: number;
   vertical_rate: number;
+  true_track: number;
   timestamp: number;
 }
 
@@ -22,7 +23,8 @@ export class FlightEntity {
     public velocity: number,
     public verticalRate: number,
     public onGround: boolean,
-    public lastUpdate: Date
+    public lastUpdate: Date,
+    public trueTrack: number = 0
   ) {}
 
   static fromFlightData(data: FlightData): FlightEntity {
@@ -35,7 +37,8 @@ export class FlightEntity {
       data.velocity,
       data.vertical_rate,
       data.on_ground,
-      new Date(data.timestamp * 1000) // Convert Unix timestamp to Date
+      new Date(data.timestamp * 1000),
+      data.true_track
     );
   }
 
@@ -47,6 +50,7 @@ export class FlightEntity {
     this.verticalRate = data.vertical_rate;
     this.onGround = data.on_ground;
     this.lastUpdate = new Date(data.timestamp * 1000);
+    this.trueTrack = data.true_track;
   }
 
   isActive(): boolean {

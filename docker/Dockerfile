@@ -5,13 +5,13 @@ FROM node:20.11-alpine as builder
 WORKDIR /app
 
 # Copy package files
-COPY package*.json ./
+COPY ../package*.json ./
 
 # Install dependencies
 RUN npm ci
 
 # Copy source code
-COPY . .
+COPY .. .
 
 # Build the application
 RUN npm run build

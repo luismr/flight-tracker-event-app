@@ -7,17 +7,34 @@
 
 A real-time flight tracking application built with React and TypeScript, following Domain-Driven Design principles.
 
-![Realtime Flight Tracker Screenshot](docs/screenshot.png)  
+## Prerequisites
 
-## Tech Stack
+### Development Environment
+- Node.js 20.18 or higher
+- npm 10.8 or higher
+- A modern web browser (Chrome, Firefox, Safari, or Edge)
 
-- Node.js 20.18
-- npm 10.8
-- TypeScript
-- React
-- Vite
-- WebSocket
-- Styled Components
+### Google Maps API Key
+You'll need a Google Maps API key to display the map. Here's how to get one:
+
+1. Go to the [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project or select an existing one
+3. Enable the required APIs:
+   - Maps JavaScript API
+   - Places API (if you plan to add search functionality)
+4. Create credentials:
+   - Go to "Credentials" in the left sidebar
+   - Click "Create Credentials" > "API Key"
+   - Your new API key will be displayed
+
+5. (Recommended) Restrict the API key:
+   - Go back to the Credentials page
+   - Click on the newly created API key
+   - Under "Application restrictions", choose "HTTP referrers"
+   - Add your development and production domains
+   - Under "API restrictions", select "Restrict key"
+   - Select the APIs you enabled (Maps JavaScript API, etc.)
+   - Click "Save"
 
 ## Project Structure
 
@@ -42,13 +59,6 @@ Each feature follows the DDD layered architecture:
 
 ## Getting Started
 
-### Prerequisites
-
-- Node.js 20.18 or higher
-- npm 10.8 or higher
-
-### Installation
-
 1. Clone the repository:
 ```bash
 git clone git@github.com:luismr/flight-tracker-event-app.git
@@ -60,11 +70,15 @@ cd flight-tracker-event-app
 npm install
 ```
 
-3. Create a `.env` file in the project root with your WebSocket configuration:
+3. Create a `.env` file in the project root:
 ```env
-VITE_WEBSOCKET_URL="ws://localhost:8080/map-updates"
+# WebSocket Configuration
+VITE_WEBSOCKET_URL=ws://localhost:8080/map-updates
 VITE_WEBSOCKET_RECONNECT_INTERVAL=5000
 VITE_WEBSOCKET_MAX_RETRIES=5
+
+# Google Maps API Key
+VITE_GOOGLE_MAPS_API_KEY=your-google-maps-api-key-here
 ```
 
 4. Start the development server:
@@ -73,6 +87,15 @@ npm run dev
 ```
 
 The application will be available at `http://localhost:5173`
+
+## Features
+
+- Real-time flight tracking via WebSocket
+- Interactive Google Maps display showing all flights
+- Custom airplane icons with status indicators
+- Detailed flight information cards
+- Automatic map bounds adjustment to show all flights
+- Responsive design for mobile browsers
 
 ## Building for Production
 
@@ -84,27 +107,42 @@ The built files will be in the `dist` directory.
 
 ## Docker Deployment
 
-### Building the Docker Image
+The Docker configuration files are located in the `docker` directory:
+- `docker/Dockerfile` - Multi-stage build for production
+- `docker/nginx.conf` - Nginx configuration for serving the application
+
+### Using Docker Compose (Recommended)
 
 ```bash
-docker build -t flight-tracker-app .
-```
-
-### Running the Container
-
-```bash
-docker run -d -p 80:80 --name flight-tracker flight-tracker-app
+docker-compose up -d
 ```
 
 The application will be available at `http://localhost`.
 
-### Environment Variables
+### Manual Docker Build
 
-When running in Docker, you can pass environment variables using the `-e` flag:
+```bash
+docker build -t flight-tracker-app -f docker/Dockerfile .
+```
+
+### Running the Container Manually
 
 ```bash
 docker run -d -p 80:80 \
   -e VITE_WEBSOCKET_URL=ws://your-websocket-server/map-updates \
+  --name flight-tracker flight-tracker-app
+```
+
+### Environment Variables
+
+When running with Docker Compose, edit the environment variables in `docker-compose.yml`.
+When running the container manually, pass environment variables using the `-e` flag:
+
+```bash
+docker run -d -p 80:80 \
+  -e VITE_WEBSOCKET_URL=ws://your-websocket-server/map-updates \
+  -e VITE_WEBSOCKET_RECONNECT_INTERVAL=5000 \
+  -e VITE_WEBSOCKET_MAX_RETRIES=5 \
   --name flight-tracker flight-tracker-app
 ```
 
@@ -135,3 +173,4 @@ Please make sure to:
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details. 
+
