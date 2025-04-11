@@ -46,6 +46,7 @@ const FlightInfo = styled.div`
 
 interface FlightListProps {
   flights: FlightEntity[];
+  apiKey: string;
 }
 
 const getCardinalDirection = (heading: number): string => {
@@ -54,10 +55,10 @@ const getCardinalDirection = (heading: number): string => {
   return directions[index];
 };
 
-export const FlightList: React.FC<FlightListProps> = ({ flights }) => {
+export const FlightList: React.FC<FlightListProps> = ({ flights, apiKey }) => {
   return (
     <Container>
-      <FlightMap flights={flights} />
+      <FlightMap flights={flights} apiKey={apiKey} />
       <ListContainer>
         {flights.map((flight) => (
           <FlightCard key={flight.icao24}>

@@ -24,6 +24,7 @@ const LoadingContainer = styled.div`
 
 interface FlightMapProps {
   flights: FlightEntity[];
+  apiKey: string;
 }
 
 const mapContainerStyle = {
@@ -44,10 +45,10 @@ const options = {
   fullscreenControl: true,
 };
 
-export const FlightMap: React.FC<FlightMapProps> = ({ flights }) => {
+export const FlightMap: React.FC<FlightMapProps> = ({ flights, apiKey }) => {
   const mapRef = useRef<google.maps.Map>();
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '',
+    googleMapsApiKey: apiKey,
   });
 
   const onMapLoad = useCallback((map: google.maps.Map) => {

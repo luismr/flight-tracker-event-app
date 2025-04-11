@@ -92,7 +92,7 @@ function App() {
           {connectionStatus === 'CONNECTED' ? '🟢' : connectionStatus === 'CONNECTING' ? '🟡' : '🔴'} {connectionStatus}
         </ConnectionStatus>
       </Header>
-      <FlightList flights={flights} />
+      <FlightList flights={flights} apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY} />
     </AppContainer>
   );
 }

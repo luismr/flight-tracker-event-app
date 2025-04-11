@@ -4,6 +4,7 @@
 [![Node](https://img.shields.io/badge/Node-20.11-339933?logo=node.js)](https://nodejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-7.0.x-blue?logo=typescript)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-18.2-61DAFB?logo=react)](https://reactjs.org/)
+[![Jest](https://img.shields.io/badge/Jest-6.4.x-C21325?logo=jest)](https://jestjs.io/)
 
 A real-time flight tracking application built with React and TypeScript, following Domain-Driven Design principles.
 
@@ -49,6 +50,13 @@ src/
 │   └── infrastructure/     # External services and adapters
 ├── shared/                 # Shared utilities and components
 └── App.tsx                 # Application entry point
+
+tests/
+├── flights/              # Flight feature tests
+│   ├── ui/              # UI component tests
+│   ├── domain/          # Domain logic tests
+│   └── infrastructure/  # Infrastructure tests
+└── setupTests.ts        # Test environment setup
 ```
 
 Each feature follows the DDD layered architecture:
@@ -56,6 +64,8 @@ Each feature follows the DDD layered architecture:
 - **Application Layer**: Services and use cases that orchestrate domain logic
 - **Domain Layer**: Business entities, value objects, and core business rules
 - **Infrastructure Layer**: External services, repositories, and technical implementations
+
+The test structure mirrors the source code organization, making it easy to locate and maintain tests for each component.
 
 ## Getting Started
 
@@ -114,6 +124,9 @@ The Docker configuration files are located in the `docker` directory:
 ### Using Docker Compose (Recommended)
 
 ```bash
+# Create a .env file with your Google Maps API Key
+echo "VITE_GOOGLE_MAPS_API_KEY=your-google-maps-api-key-here" > .env
+
 docker-compose up -d
 ```
 
@@ -130,21 +143,50 @@ docker build -t flight-tracker-app -f docker/Dockerfile .
 ```bash
 docker run -d -p 80:80 \
   -e VITE_WEBSOCKET_URL=ws://your-websocket-server/map-updates \
+  -e VITE_GOOGLE_MAPS_API_KEY=your-google-maps-api-key-here \
   --name flight-tracker flight-tracker-app
 ```
 
 ### Environment Variables
 
-When running with Docker Compose, edit the environment variables in `docker-compose.yml`.
-When running the container manually, pass environment variables using the `-e` flag:
+When running with Docker Compose, edit the environment variables in `docker-compose.yml`:
+
+```yaml
+environment:
+  - VITE_WEBSOCKET_URL=ws://your-websocket-server/map-updates
+  - VITE_GOOGLE_MAPS_API_KEY=your-google-maps-api-key-here
+  - VITE_WEBSOCKET_RECONNECT_INTERVAL=5000
+  - VITE_WEBSOCKET_MAX_RETRIES=5
+```
+
+When running the container manually, pass all required environment variables:
 
 ```bash
 docker run -d -p 80:80 \
   -e VITE_WEBSOCKET_URL=ws://your-websocket-server/map-updates \
+  -e VITE_GOOGLE_MAPS_API_KEY=your-google-maps-api-key-here \
   -e VITE_WEBSOCKET_RECONNECT_INTERVAL=5000 \
   -e VITE_WEBSOCKET_MAX_RETRIES=5 \
   --name flight-tracker flight-tracker-app
 ```
+
+## Running Tests
+
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage report
+npm run test:coverage
+```
+
+The test suite includes:
+- Unit tests for domain logic
+- Component tests with React Testing Library
+- Integration tests for infrastructure services
 
 ## Contributing
 
