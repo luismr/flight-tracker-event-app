@@ -33,7 +33,7 @@ jobs:
         VITE_WEBSOCKET_URL: ${{ vars.VITE_WEBSOCKET_URL }}
 
     - name: Run tests and collect coverage
-      run: npm run test:coverage
+      run: npm run test:coverage-ci
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v4
