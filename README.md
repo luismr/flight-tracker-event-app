@@ -5,6 +5,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-7.0.x-blue?logo=typescript)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-18.2-61DAFB?logo=react)](https://reactjs.org/)
 [![Jest](https://img.shields.io/badge/Jest-6.4.x-C21325?logo=jest)](https://jestjs.io/)
+[![codecov](https://codecov.io/gh/luismr/flight-tracker-event-app/branch/main/graph/badge.svg)](https://codecov.io/gh/luismr/flight-tracker-event-app)
 
 A real-time flight tracking application built with React and TypeScript, following Domain-Driven Design principles.
 
