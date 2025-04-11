@@ -1,0 +1,30 @@
+// vite.config.ts
+import { defineConfig } from "file:///Volumes/MacOS%20Storage/Work/flight-tracker-event-app/node_modules/vite/dist/node/index.js";
+import react from "file:///Volumes/MacOS%20Storage/Work/flight-tracker-event-app/node_modules/@vitejs/plugin-react/dist/index.mjs";
+import { resolve } from "path";
+import { codecovVitePlugin } from "file:///Volumes/MacOS%20Storage/Work/flight-tracker-event-app/node_modules/@codecov/vite-plugin/dist/index.mjs";
+var __vite_injected_original_dirname = "/Volumes/MacOS Storage/Work/flight-tracker-event-app";
+var vite_config_default = defineConfig({
+  plugins: [
+    react(),
+    // Put the Codecov vite plugin after all other plugins
+    codecovVitePlugin({
+      enableBundleAnalysis: process.env.CODECOV_TOKEN !== void 0,
+      bundleName: "<bundle project name>",
+      uploadToken: process.env.CODECOV_TOKEN
+    })
+  ],
+  resolve: {
+    alias: {
+      "@": resolve(__vite_injected_original_dirname, "./src")
+    }
+  },
+  server: {
+    host: true,
+    port: 5173
+  }
+});
+export {
+  vite_config_default as default
+};
+//# sourceMappingURL=data:application/json;base64,ewogICJ2ZXJzaW9uIjogMywKICAic291cmNlcyI6IFsidml0ZS5jb25maWcudHMiXSwKICAic291cmNlc0NvbnRlbnQiOiBbImNvbnN0IF9fdml0ZV9pbmplY3RlZF9vcmlnaW5hbF9kaXJuYW1lID0gXCIvVm9sdW1lcy9NYWNPUyBTdG9yYWdlL1dvcmsvZmxpZ2h0LXRyYWNrZXItZXZlbnQtYXBwXCI7Y29uc3QgX192aXRlX2luamVjdGVkX29yaWdpbmFsX2ZpbGVuYW1lID0gXCIvVm9sdW1lcy9NYWNPUyBTdG9yYWdlL1dvcmsvZmxpZ2h0LXRyYWNrZXItZXZlbnQtYXBwL3ZpdGUuY29uZmlnLnRzXCI7Y29uc3QgX192aXRlX2luamVjdGVkX29yaWdpbmFsX2ltcG9ydF9tZXRhX3VybCA9IFwiZmlsZTovLy9Wb2x1bWVzL01hY09TJTIwU3RvcmFnZS9Xb3JrL2ZsaWdodC10cmFja2VyLWV2ZW50LWFwcC92aXRlLmNvbmZpZy50c1wiO2ltcG9ydCB7IGRlZmluZUNvbmZpZyB9IGZyb20gJ3ZpdGUnO1xuaW1wb3J0IHJlYWN0IGZyb20gJ0B2aXRlanMvcGx1Z2luLXJlYWN0JztcbmltcG9ydCB7IHJlc29sdmUgfSBmcm9tICdwYXRoJztcbmltcG9ydCB7IGNvZGVjb3ZWaXRlUGx1Z2luIH0gZnJvbSAnQGNvZGVjb3Yvdml0ZS1wbHVnaW4nO1xuLy8gaHR0cHM6Ly92aXRlanMuZGV2L2NvbmZpZy9cbmV4cG9ydCBkZWZhdWx0IGRlZmluZUNvbmZpZyh7XG4gIHBsdWdpbnM6IFtcbiAgICByZWFjdCgpLFxuICAgIC8vIFB1dCB0aGUgQ29kZWNvdiB2aXRlIHBsdWdpbiBhZnRlciBhbGwgb3RoZXIgcGx1Z2luc1xuICAgIGNvZGVjb3ZWaXRlUGx1Z2luKHtcbiAgICAgIGVuYWJsZUJ1bmRsZUFuYWx5c2lzOiBwcm9jZXNzLmVudi5DT0RFQ09WX1RPS0VOICE9PSB1bmRlZmluZWQsXG4gICAgICBidW5kbGVOYW1lOiBcIjxidW5kbGUgcHJvamVjdCBuYW1lPlwiLFxuICAgICAgdXBsb2FkVG9rZW46IHByb2Nlc3MuZW52LkNPREVDT1ZfVE9LRU4sXG4gICAgfSksXG4gIF0sXG4gIHJlc29sdmU6IHtcbiAgICBhbGlhczoge1xuICAgICAgJ0AnOiByZXNvbHZlKF9fZGlybmFtZSwgJy4vc3JjJyksXG4gICAgfSxcbiAgfSxcbiAgc2VydmVyOiB7XG4gICAgaG9zdDogdHJ1ZSxcbiAgICBwb3J0OiA1MTczLFxuICB9LFxufSk7ICJdLAogICJtYXBwaW5ncyI6ICI7QUFBZ1YsU0FBUyxvQkFBb0I7QUFDN1csT0FBTyxXQUFXO0FBQ2xCLFNBQVMsZUFBZTtBQUN4QixTQUFTLHlCQUF5QjtBQUhsQyxJQUFNLG1DQUFtQztBQUt6QyxJQUFPLHNCQUFRLGFBQWE7QUFBQSxFQUMxQixTQUFTO0FBQUEsSUFDUCxNQUFNO0FBQUE7QUFBQSxJQUVOLGtCQUFrQjtBQUFBLE1BQ2hCLHNCQUFzQixRQUFRLElBQUksa0JBQWtCO0FBQUEsTUFDcEQsWUFBWTtBQUFBLE1BQ1osYUFBYSxRQUFRLElBQUk7QUFBQSxJQUMzQixDQUFDO0FBQUEsRUFDSDtBQUFBLEVBQ0EsU0FBUztBQUFBLElBQ1AsT0FBTztBQUFBLE1BQ0wsS0FBSyxRQUFRLGtDQUFXLE9BQU87QUFBQSxJQUNqQztBQUFBLEVBQ0Y7QUFBQSxFQUNBLFFBQVE7QUFBQSxJQUNOLE1BQU07QUFBQSxJQUNOLE1BQU07QUFBQSxFQUNSO0FBQ0YsQ0FBQzsiLAogICJuYW1lcyI6IFtdCn0K
