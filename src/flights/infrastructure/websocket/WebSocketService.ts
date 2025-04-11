@@ -15,11 +15,11 @@ export class WebSocketService {
   private reconnectTimeout: NodeJS.Timeout | null = null;
   private messageHandlers: Set<MessageHandler> = new Set();
 
-  constructor() {
+  constructor(url: string, reconnectInterval: number, maxRetries: number) {
     this.config = {
-      url: import.meta.env.VITE_WEBSOCKET_URL || 'ws://localhost:8080/map-updates',
-      reconnectInterval: Number(import.meta.env.VITE_WEBSOCKET_RECONNECT_INTERVAL) || 5000,
-      maxRetries: Number(import.meta.env.VITE_WEBSOCKET_MAX_RETRIES) || 5
+      url: url,
+      reconnectInterval: reconnectInterval,
+      maxRetries: maxRetries
     };
     
     console.log('WebSocket configuration loaded:', {

@@ -46,7 +46,13 @@ const ConnectionStatus = styled.div<{ status: string }>`
 
 function App() {
   const [flightService] = useState(() => new FlightService());
-  const [webSocketService] = useState(() => new WebSocketService());
+  const [webSocketService] = useState(
+    () => new WebSocketService(
+      import.meta.env.VITE_WEBSOCKET_URL || 'ws://localhost:8080/map-updates', 
+      Number(import.meta.env.VITE_WEBSOCKET_RECONNECT_INTERVAL) || 5000, 
+      Number(import.meta.env.VITE_WEBSOCKET_MAX_RETRIES) || 3
+    )
+  );
   const [flights, setFlights] = useState<FlightEntity[]>([]);
   const [connectionStatus, setConnectionStatus] = useState('DISCONNECTED');
 
