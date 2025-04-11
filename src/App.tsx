@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { FlightList } from './flights/ui/components/FlightList';
 import { FlightService } from './flights/application/FlightService';
