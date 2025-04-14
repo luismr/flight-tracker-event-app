@@ -11,7 +11,7 @@ COPY ../package*.json ./
 RUN npm ci
 
 # Copy source code
-COPY .. .
+COPY . .
 
 # Build the application
 RUN npm run build
@@ -20,7 +20,7 @@ RUN npm run build
 FROM nginx:1.25-alpine
 
 # Copy Nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copy built files from builder stage
 COPY --from=builder /app/dist /usr/share/nginx/html

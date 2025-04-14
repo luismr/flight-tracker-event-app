@@ -118,9 +118,7 @@ The built files will be in the `dist` directory.
 
 ## Docker Deployment
 
-The Docker configuration files are located in the `docker` directory:
-- `docker/Dockerfile` - Multi-stage build for production
-- `docker/nginx.conf` - Nginx configuration for serving the application
+Build and run the application using Docker:
 
 ### Using Docker Compose (Recommended)
 
@@ -136,7 +134,7 @@ The application will be available at `http://localhost`.
 ### Manual Docker Build
 
 ```bash
-docker build -t flight-tracker-app -f docker/Dockerfile .
+docker build -t flight-tracker-app .
 ```
 
 ### Running the Container Manually
