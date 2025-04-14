@@ -2,7 +2,7 @@
 
 # Create env.js with environment variables
 cat <<EOF > /usr/share/nginx/html/env.js
-window.env = {
+window.environment = {
   GOOGLE_MAPS_API_KEY: "${GOOGLE_MAPS_API_KEY}",
   WEBSOCKET_URL: "${WEBSOCKET_URL}",
   WEBSOCKET_RECONNECT_INTERVAL: "${WEBSOCKET_RECONNECT_INTERVAL}",

@@ -152,16 +152,23 @@ docker build -t flight-tracker-app \
 ### Running the Container
 
 ```bash
-docker run -d -p 80:80 --name flight-tracker flight-tracker-app
+docker run -d \
+  --name flight-tracker \
+  -p 80:80 \
+  -e GOOGLE_MAPS_API_KEY=your-google-maps-api-key-here \
+  -e WEBSOCKET_URL=ws://your-websocket-server/map-updates \
+  -e WEBSOCKET_RECONNECT_INTERVAL=5000 \
+  -e WEBSOCKET_MAX_RETRIES=3 \
+  flight-tracker-app
 ```
 
-The application will use the environment variables that were set during the build process. The default values are:
+The application will use the environment variables that were set during the build process if not overridden at runtime. The default values are:
 
 - WEBSOCKET_URL: ws://localhost:8080/map-updates
 - WEBSOCKET_RECONNECT_INTERVAL: 5000
 - WEBSOCKET_MAX_RETRIES: 3
 
-Note: The Google Maps API key must be provided during the build process using the `--build-arg` flag.
+Note: You can override the build-time variables by providing them at runtime using the `-e` flag.
 
 ## Running Tests
 

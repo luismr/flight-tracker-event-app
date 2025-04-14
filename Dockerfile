@@ -1,5 +1,5 @@
 # Stage 1: Build the application
-FROM node:20.18-alpine as builder
+FROM node:20.18-alpine AS builder
 
 ARG GOOGLE_MAPS_API_KEY
 ARG WEBSOCKET_URL
@@ -31,11 +31,14 @@ FROM nginx:1.25-alpine
 # Copy Nginx configuration
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
 
+# Copy entrypoint script
+COPY docker/docker-entrypoint.sh /docker-entrypoint.sh
+
 # Copy built files from builder stage
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 # Expose port 80
 EXPOSE 80
 
-# Set entrypoint
-ENTRYPOINT ["/docker-entrypoint.sh"] 
+# Set Container Entrypoint
+CMD ["/docker-entrypoint.sh"] 
