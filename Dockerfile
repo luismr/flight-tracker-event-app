@@ -1,6 +1,15 @@
 # Stage 1: Build the application
 FROM node:20.18-alpine as builder
 
+ARG GOOGLE_MAPS_API_KEY
+ARG WEBSOCKET_URL
+ARG WEBSOCKET_RECONNECT_INTERVAL
+ARG WEBSOCKET_MAX_RETRIES
+
+ENV WEBSOCKET_URL=${WEBSOCKET_URL:-ws://localhost:8080/map-updates}
+ENV WEBSOCKET_RECONNECT_INTERVAL=${WEBSOCKET_RECONNECT_INTERVAL:-5000}
+ENV WEBSOCKET_MAX_RETRIES=${WEBSOCKET_MAX_RETRIES:-3}
+
 # Set working directory
 WORKDIR /app
 
@@ -28,5 +37,5 @@ COPY --from=builder /app/dist /usr/share/nginx/html
 # Expose port 80
 EXPOSE 80
 
-# Start Nginx
-CMD ["nginx", "-g", "daemon off;"] 
+# Set entrypoint
+ENTRYPOINT ["/docker-entrypoint.sh"] 
