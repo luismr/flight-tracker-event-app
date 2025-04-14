@@ -123,8 +123,13 @@ Build and run the application using Docker:
 ### Using Docker Compose (Recommended)
 
 ```bash
-# Create a .env file with your Google Maps API Key
-echo "VITE_GOOGLE_MAPS_API_KEY=your-google-maps-api-key-here" > .env
+# Create a .env file with your environment variables
+cat <<EOF > .env
+VITE_GOOGLE_MAPS_API_KEY=your-google-maps-api-key-here
+VITE_WEBSOCKET_URL=ws://your-websocket-server/map-updates
+VITE_WEBSOCKET_RECONNECT_INTERVAL=5000
+VITE_WEBSOCKET_MAX_RETRIES=3
+EOF
 
 docker-compose up -d
 ```
@@ -133,41 +138,30 @@ The application will be available at `http://localhost`.
 
 ### Manual Docker Build
 
-```bash
-docker build -t flight-tracker-app .
-```
-
-### Running the Container Manually
+Build the image with your configuration:
 
 ```bash
-docker run -d -p 80:80 \
-  -e VITE_WEBSOCKET_URL=ws://your-websocket-server/map-updates \
-  -e VITE_GOOGLE_MAPS_API_KEY=your-google-maps-api-key-here \
-  --name flight-tracker flight-tracker-app
+docker build -t flight-tracker-app \
+  --build-arg GOOGLE_MAPS_API_KEY=your-google-maps-api-key-here \
+  --build-arg WEBSOCKET_URL=ws://your-websocket-server/map-updates \
+  --build-arg WEBSOCKET_RECONNECT_INTERVAL=5000 \
+  --build-arg WEBSOCKET_MAX_RETRIES=3 \
+  .
 ```
 
-### Environment Variables
-
-When running with Docker Compose, edit the environment variables in `docker-compose.yml`:
-
-```yaml
-environment:
-  - VITE_WEBSOCKET_URL=ws://your-websocket-server/map-updates
-  - VITE_GOOGLE_MAPS_API_KEY=your-google-maps-api-key-here
-  - VITE_WEBSOCKET_RECONNECT_INTERVAL=5000
-  - VITE_WEBSOCKET_MAX_RETRIES=5
-```
-
-When running the container manually, pass all required environment variables:
+### Running the Container
 
 ```bash
-docker run -d -p 80:80 \
-  -e VITE_WEBSOCKET_URL=ws://your-websocket-server/map-updates \
-  -e VITE_GOOGLE_MAPS_API_KEY=your-google-maps-api-key-here \
-  -e VITE_WEBSOCKET_RECONNECT_INTERVAL=5000 \
-  -e VITE_WEBSOCKET_MAX_RETRIES=5 \
-  --name flight-tracker flight-tracker-app
+docker run -d -p 80:80 --name flight-tracker flight-tracker-app
 ```
+
+The application will use the environment variables that were set during the build process. The default values are:
+
+- WEBSOCKET_URL: ws://localhost:8080/map-updates
+- WEBSOCKET_RECONNECT_INTERVAL: 5000
+- WEBSOCKET_MAX_RETRIES: 3
+
+Note: The Google Maps API key must be provided during the build process using the `--build-arg` flag.
 
 ## Running Tests
 
