@@ -3,8 +3,9 @@ import styled from 'styled-components';
 import { FlightList } from './flights/ui/components/FlightList';
 import { FlightService } from './flights/application/FlightService';
 import { WebSocketService } from './flights/infrastructure/websocket/WebSocketService';
-import { FlightData, FlightEntity } from './flights/domain/Flight';
+import { PingDTO } from './flights/application/dto/PingDTO';
 import config from './flights/infrastructure/Config';
+import { PingMapper } from './flights/application/dto/PingMapper';
 
 const AppContainer = styled.div`
   min-height: 100vh;
@@ -54,17 +55,18 @@ function App() {
       config.WEBSOCKET_MAX_RETRIES
     )
   );
-  const [flights, setFlights] = useState<FlightEntity[]>([]);
+  const [flights, setFlights] = useState<PingDTO[]>([]);
   const [connectionStatus, setConnectionStatus] = useState('DISCONNECTED');
 
   useEffect(() => {
     const updateFlights = () => {
       const activeFlights = flightService.getActiveFlight();
-      setFlights(activeFlights);
+      const pingDTOs = activeFlights.map(flight => PingMapper.fromFlightEntity(flight));
+      setFlights(pingDTOs);
     };
 
-    const handleFlightData = (flightData: FlightData) => {
-      flightService.addOrUpdateFlight(flightData);
+    const handleFlightData = (ping: PingDTO) => {
+      flightService.addOrUpdateFlight(ping);  
       updateFlights();
     };
 

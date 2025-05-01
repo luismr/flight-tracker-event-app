@@ -29,6 +29,7 @@ dist-ssr
 .env
 .env.*
 !.env.example
+env.js
 
 # Build
 /build

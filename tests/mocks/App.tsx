@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import { FlightList } from '../../src/flights/ui/components/FlightList';
 import { FlightService } from '../../src/flights/application/FlightService';
 import { WebSocketService } from '../../src/flights/infrastructure/websocket/WebSocketService';
-import { FlightData, FlightEntity } from '../../src/flights/domain/Flight';
+import { PingDTO } from '../../src/flights/application/dto/PingDTO';
+import { PingMapper } from '../../src/flights/application/dto/PingMapper';
 
 const AppContainer = styled.div`
   min-height: 100vh;
@@ -53,23 +54,24 @@ function App() {
       3
     )
   );
-  const [flights, setFlights] = useState<FlightEntity[]>([]);
+  const [flights, setFlights] = useState<PingDTO[]>([]);
   const [connectionStatus, setConnectionStatus] = useState('DISCONNECTED');
 
   useEffect(() => {
     const updateFlights = () => {
+      // Convert all active FlightEntities to PingDTOs
       const activeFlights = flightService.getActiveFlight();
-      setFlights(activeFlights);
+      setFlights(activeFlights.map(f => PingMapper.fromFlightEntity(f)));
     };
 
-    const handleFlightData = (flightData: FlightData) => {
-      flightService.addOrUpdateFlight(flightData);
+    const handlePing = (ping: PingDTO) => {
+      flightService.addOrUpdateFlight(ping);
       updateFlights();
     };
 
     // Connect to WebSocket and set up message handler
     webSocketService.connect();
-    webSocketService.onMessage(handleFlightData);
+    webSocketService.onMessage(handlePing);
 
     // Update connection status periodically
     const statusInterval = setInterval(() => {
@@ -86,7 +88,7 @@ function App() {
       webSocketService.disconnect();
       clearInterval(cleanupInterval);
       clearInterval(statusInterval);
-      webSocketService.offMessage(handleFlightData);
+      webSocketService.offMessage(handlePing);
     };
   }, [flightService, webSocketService]);
 
