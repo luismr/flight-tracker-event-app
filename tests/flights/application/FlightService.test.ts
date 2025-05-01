@@ -1,47 +1,63 @@
 import { FlightService } from '../../../src/flights/application/FlightService';
-import { FlightData } from '../../../src/flights/domain/Flight';
+import { PingDTO } from '../../../src/flights/application/dto/PingDTO';
+import { PingMapper } from '../../../src/flights/application/dto/PingMapper';
 
 describe('FlightService', () => {
   let flightService: FlightService;
-  let mockFlightData: FlightData;
+  let mockPing: PingDTO;
 
   beforeEach(() => {
     flightService = new FlightService();
-    mockFlightData = {
-      ping_id: '123',
-      icao24: 'abc123',
-      callsign: 'TEST123',
-      latitude: 37.7749,
-      longitude: -122.4194,
-      geo_altitude: 10000,
-      baro_altitude: 10000,
-      on_ground: false,
-      velocity: 500,
-      vertical_rate: 0,
-      true_track: 90,
-      timestamp: Math.floor(Date.now() / 1000)
+    mockPing = {
+      id: '123',
+      aircraft: {
+        icao24: 'abc123',
+        callsign: 'TEST123',
+        origin_country: 'TestCountry',
+        last_contact: Math.floor(Date.now() / 1000),
+        squawk: '1234',
+        spi: false,
+        sensors: [1, 2]
+      },
+      vector: {
+        velocity: 500,
+        true_track: 90,
+        vertical_rate: 0
+      },
+      position: {
+        longitude: -122.4194,
+        latitude: 37.7749,
+        geo_altitude: 10000,
+        baro_altitude: 10000,
+        on_ground: false,
+        source: 1,
+        time: Math.floor(Date.now() / 1000)
+      },
+      last_update: Math.floor(Date.now() / 1000)
     };
   });
 
   describe('addOrUpdateFlight', () => {
     it('should add a new flight when it does not exist', () => {
-      flightService.addOrUpdateFlight(mockFlightData);
-      const flight = flightService.getFlightById(mockFlightData.icao24);
+      flightService.addOrUpdateFlight(mockPing);
+      const flight = flightService.getFlightById(mockPing.aircraft.icao24);
       expect(flight).toBeDefined();
-      expect(flight?.icao24).toBe(mockFlightData.icao24);
+      expect(flight?.icao24).toBe(mockPing.aircraft.icao24);
     });
 
     it('should update existing flight when it exists', () => {
-      flightService.addOrUpdateFlight(mockFlightData);
-      const updatedFlightData = { 
-        ...mockFlightData,
-        geo_altitude: 15000
+      flightService.addOrUpdateFlight(mockPing);
+      const updatedPing = { 
+        ...mockPing,
+        position: {
+          ...mockPing.position,
+          geo_altitude: 15000
+        }
       };
-      flightService.addOrUpdateFlight(updatedFlightData);
-      
+      flightService.addOrUpdateFlight(updatedPing);
       const flights = flightService.getAllFlights();
       expect(flights.length).toBe(1);
-      expect(flights[0].altitude).toBe(15000);
+      expect(flights[0].geoAltitude).toBe(15000);
     });
   });
 
@@ -52,26 +68,25 @@ describe('FlightService', () => {
     });
 
     it('should return all flights when flights exist', () => {
-      flightService.addOrUpdateFlight(mockFlightData);
+      flightService.addOrUpdateFlight(mockPing);
       const flights = flightService.getAllFlights();
       expect(flights.length).toBe(1);
-      expect(flights[0].icao24).toBe(mockFlightData.icao24);
+      expect(flights[0].icao24).toBe(mockPing.aircraft.icao24);
     });
   });
 
   describe('getActiveFlight', () => {
     it('should return only active flights', () => {
-      const inactiveFlightData = {
-        ...mockFlightData,
-        timestamp: Math.floor((Date.now() - 600000) / 1000), // 10 minutes old
+      const inactivePing = {
+        ...mockPing,
+        aircraft: { ...mockPing.aircraft, icao24: 'inactive123' },
+        last_update: Math.floor((Date.now() - 600000) / 1000) // 10 minutes old in seconds
       };
-
-      flightService.addOrUpdateFlight(mockFlightData);
-      flightService.addOrUpdateFlight({ ...inactiveFlightData, icao24: 'inactive123' });
-
+      flightService.addOrUpdateFlight(mockPing);
+      flightService.addOrUpdateFlight(inactivePing);
       const activeFlights = flightService.getActiveFlight();
       expect(activeFlights.length).toBe(1);
-      expect(activeFlights[0].icao24).toBe(mockFlightData.icao24);
+      expect(activeFlights[0].icao24).toBe(mockPing.aircraft.icao24);
     });
   });
 
@@ -82,38 +97,34 @@ describe('FlightService', () => {
     });
 
     it('should return flight for existing id', () => {
-      flightService.addOrUpdateFlight(mockFlightData);
-      const flight = flightService.getFlightById(mockFlightData.icao24);
+      flightService.addOrUpdateFlight(mockPing);
+      const flight = flightService.getFlightById(mockPing.aircraft.icao24);
       expect(flight).toBeDefined();
-      expect(flight?.icao24).toBe(mockFlightData.icao24);
+      expect(flight?.icao24).toBe(mockPing.aircraft.icao24);
     });
   });
 
   describe('removeInactiveFlights', () => {
     it('should remove inactive flights', () => {
-      const inactiveFlightData = {
-        ...mockFlightData,
-        icao24: 'inactive123',
-        timestamp: Math.floor((Date.now() - 600000) / 1000), // 10 minutes old
+      const inactivePing = {
+        ...mockPing,
+        aircraft: { ...mockPing.aircraft, icao24: 'inactive123' },
+        last_update: Math.floor((Date.now() - 600000) / 1000) // 10 minutes old in seconds
       };
-
-      flightService.addOrUpdateFlight(mockFlightData);
-      flightService.addOrUpdateFlight(inactiveFlightData);
-      
+      flightService.addOrUpdateFlight(mockPing);
+      flightService.addOrUpdateFlight(inactivePing);
       flightService.removeInactiveFlights();
-      
       const flights = flightService.getAllFlights();
       expect(flights.length).toBe(1);
-      expect(flights[0].icao24).toBe(mockFlightData.icao24);
+      expect(flights[0].icao24).toBe(mockPing.aircraft.icao24);
     });
 
     it('should not remove active flights', () => {
-      flightService.addOrUpdateFlight(mockFlightData);
+      flightService.addOrUpdateFlight(mockPing);
       flightService.removeInactiveFlights();
-      
       const flights = flightService.getAllFlights();
       expect(flights.length).toBe(1);
-      expect(flights[0].icao24).toBe(mockFlightData.icao24);
+      expect(flights[0].icao24).toBe(mockPing.aircraft.icao24);
     });
   });
 }); 

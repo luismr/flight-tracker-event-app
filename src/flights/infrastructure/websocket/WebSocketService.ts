@@ -1,4 +1,4 @@
-import { FlightData } from '../../domain/Flight';
+import { PingDTO } from '../../application/dto/PingDTO';
 
 interface WebSocketConfig {
   url: string;
@@ -6,7 +6,7 @@ interface WebSocketConfig {
   maxRetries: number;
 }
 
-type MessageHandler = (data: FlightData) => void;
+type MessageHandler = (data: PingDTO) => void;
 
 export class WebSocketService {
   private ws: WebSocket | null = null;
@@ -21,17 +21,10 @@ export class WebSocketService {
       reconnectInterval: reconnectInterval,
       maxRetries: maxRetries
     };
-    
-    console.log('WebSocket configuration loaded:', {
-      url: this.config.url,
-      reconnectInterval: this.config.reconnectInterval,
-      maxRetries: this.config.maxRetries
-    });
   }
 
   connect(): void {
     try {
-      console.log(`Attempting to connect to WebSocket at ${this.config.url}`);
       this.ws = new WebSocket(this.config.url);
       this.setupEventListeners();
     } catch (error) {
@@ -44,12 +37,14 @@ export class WebSocketService {
     if (!this.ws) return;
 
     this.ws.onopen = () => {
-      console.log(`WebSocket connection established to ${this.config.url}`);
+      console.log('WebSocket: Connected');
       this.retryCount = 0;
     };
 
     this.ws.onclose = (event) => {
-      console.log(`WebSocket connection closed. Code: ${event.code}, Reason: ${event.reason}`);
+      if (event.code !== 1000) { // Only log abnormal closures
+        console.log('WebSocket: Disconnected', event.code);
+      }
       this.handleReconnection();
     };
 
@@ -59,8 +54,46 @@ export class WebSocketService {
 
     this.ws.onmessage = (event) => {
       try {
-        const data = JSON.parse(event.data);
-        console.log('Received WebSocket message:', data);
+        const rawData = JSON.parse(event.data);
+        if (
+          !rawData.id ||
+          !rawData.aircraft ||
+          !rawData.vector ||
+          !rawData.position ||
+          typeof rawData.last_update !== 'number'
+        ) {
+          // Only log invalid messages
+          console.warn('Invalid flight data received');
+          return;
+        }
+
+        const data: PingDTO = {
+          id: rawData.id,
+          aircraft: {
+            icao24: rawData.aircraft.icao24,
+            callsign: rawData.aircraft.callsign,
+            origin_country: rawData.aircraft.origin_country,
+            last_contact: rawData.aircraft.last_contact,
+            squawk: rawData.aircraft.squawk,
+            spi: rawData.aircraft.spi,
+            sensors: Array.isArray(rawData.aircraft.sensors) ? rawData.aircraft.sensors : [],
+          },
+          vector: {
+            velocity: rawData.vector.velocity,
+            true_track: rawData.vector.true_track,
+            vertical_rate: rawData.vector.vertical_rate,
+          },
+          position: {
+            longitude: rawData.position.longitude,
+            latitude: rawData.position.latitude,
+            geo_altitude: rawData.position.geo_altitude,
+            baro_altitude: rawData.position.baro_altitude,
+            on_ground: rawData.position.on_ground,
+            source: rawData.position.source,
+            time: rawData.position.time,
+          },
+          last_update: rawData.last_update,
+        };
         this.messageHandlers.forEach(handler => handler(data));
       } catch (error) {
         console.error('Error processing WebSocket message:', error);
@@ -70,7 +103,7 @@ export class WebSocketService {
 
   private handleReconnection(): void {
     if (this.retryCount >= this.config.maxRetries) {
-      console.error(`Max reconnection attempts (${this.config.maxRetries}) reached. Giving up.`);
+      console.error('WebSocket: Max reconnection attempts reached');
       return;
     }
 
@@ -80,19 +113,16 @@ export class WebSocketService {
 
     this.reconnectTimeout = setTimeout(() => {
       this.retryCount++;
-      console.log(`Attempting to reconnect (${this.retryCount}/${this.config.maxRetries})`);
       this.connect();
     }, this.config.reconnectInterval);
   }
 
   onMessage(handler: MessageHandler): void {
     this.messageHandlers.add(handler);
-    console.log('Added message handler, total handlers:', this.messageHandlers.size);
   }
 
   offMessage(handler: MessageHandler): void {
     this.messageHandlers.delete(handler);
-    console.log('Removed message handler, remaining handlers:', this.messageHandlers.size);
   }
 
   send(data: any): void {

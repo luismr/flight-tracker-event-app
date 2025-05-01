@@ -1,68 +1,35 @@
-export interface FlightData {
-  ping_id: string;
-  icao24: string;
-  callsign: string;
-  latitude: number;
-  longitude: number;
-  geo_altitude: number;
-  baro_altitude: number | null;
-  on_ground: boolean;
-  velocity: number;
-  vertical_rate: number;
-  true_track: number;
-  timestamp: number;
-}
-
 export class FlightEntity {
   constructor(
+    public readonly id: string,
     public readonly icao24: string,
     public readonly callsign: string,
+    public readonly originCountry: string,
     public latitude: number,
     public longitude: number,
-    public altitude: number,
+    public geoAltitude: number,
+    public baroAltitude: number,
+    public onGround: boolean,
     public velocity: number,
     public verticalRate: number,
-    public onGround: boolean,
+    public trueTrack: number,
     public lastUpdate: Date,
-    public trueTrack: number = 0
+    public squawk: string,
+    public spi: boolean,
+    public sensors: number[],
+    public positionSource: number
   ) {}
 
-  static fromFlightData(data: FlightData): FlightEntity {
-    return new FlightEntity(
-      data.icao24,
-      data.callsign,
-      data.latitude,
-      data.longitude,
-      data.geo_altitude,
-      data.velocity,
-      data.vertical_rate,
-      data.on_ground,
-      new Date(data.timestamp * 1000),
-      data.true_track
-    );
-  }
-
-  updateFromFlightData(data: FlightData): void {
-    this.latitude = data.latitude;
-    this.longitude = data.longitude;
-    this.altitude = data.geo_altitude;
-    this.velocity = data.velocity;
-    this.verticalRate = data.vertical_rate;
-    this.onGround = data.on_ground;
-    this.lastUpdate = new Date(data.timestamp * 1000);
-    this.trueTrack = data.true_track;
-  }
-
   isActive(): boolean {
-    const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
-    return this.lastUpdate > fiveMinutesAgo;
+    const fiveMinutesAgo = Date.now() - 5 * 60 * 1000;
+    return this.lastUpdate.getTime() > fiveMinutesAgo;
   }
 
-  getPosition(): { latitude: number; longitude: number; altitude: number } {
+  getPosition(): { latitude: number; longitude: number; geoAltitude: number; baroAltitude: number } {
     return {
       latitude: this.latitude,
       longitude: this.longitude,
-      altitude: this.altitude
+      geoAltitude: this.geoAltitude,
+      baroAltitude: this.baroAltitude
     };
   }
 
@@ -72,5 +39,21 @@ export class FlightEntity {
       verticalRate: this.verticalRate,
       onGround: this.onGround
     };
+  }
+
+  update(entity: FlightEntity): void {
+    this.latitude = entity.latitude;
+    this.longitude = entity.longitude;
+    this.geoAltitude = entity.geoAltitude;
+    this.baroAltitude = entity.baroAltitude;
+    this.onGround = entity.onGround;
+    this.velocity = entity.velocity;
+    this.verticalRate = entity.verticalRate;
+    this.trueTrack = entity.trueTrack;
+    this.squawk = entity.squawk;
+    this.spi = entity.spi;
+    this.sensors = entity.sensors;
+    this.positionSource = entity.positionSource;
+    this.lastUpdate = entity.lastUpdate;
   }
 } 

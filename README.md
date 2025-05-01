@@ -81,16 +81,18 @@ cd flight-tracker-event-app
 npm install
 ```
 
-3. Create a `.env` file in the project root:
-```env
-# WebSocket Configuration
-VITE_WEBSOCKET_URL=ws://localhost:8080/map-updates
-VITE_WEBSOCKET_RECONNECT_INTERVAL=5000
-VITE_WEBSOCKET_MAX_RETRIES=5
-
-# Google Maps API Key
-VITE_GOOGLE_MAPS_API_KEY=your-google-maps-api-key-here
+3. Create a `env.js` file in the project root based on the example file:
+```javascript
+// env.js
+window.environment = {
+  WEBSOCKET_URL: "ws://localhost:8080/map-updates",
+  WEBSOCKET_RECONNECT_INTERVAL: 5000,
+  WEBSOCKET_MAX_RETRIES: 5,
+  GOOGLE_MAPS_API_KEY: "your-google-maps-api-key-here"
+};
 ```
+
+> Note: The `env.js` file is used for runtime configuration. This file should be created locally and not committed to version control. For local development with Vite, this file needs to be placed in the project root.
 
 4. Start the development server:
 ```bash
@@ -138,15 +140,10 @@ The application will be available at `http://localhost`.
 
 ### Manual Docker Build
 
-Build the image with your configuration:
+Build the image:
 
 ```bash
-docker build -t flight-tracker-app \
-  --build-arg GOOGLE_MAPS_API_KEY=your-google-maps-api-key-here \
-  --build-arg WEBSOCKET_URL=ws://your-websocket-server/map-updates \
-  --build-arg WEBSOCKET_RECONNECT_INTERVAL=5000 \
-  --build-arg WEBSOCKET_MAX_RETRIES=3 \
-  .
+docker build -t flight-tracker-app .
 ```
 
 ### Running the Container

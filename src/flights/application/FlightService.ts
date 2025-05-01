@@ -1,16 +1,18 @@
-import { FlightData, FlightEntity } from '../domain/Flight';
+import { PingDTO } from './dto/PingDTO';
+import { PingMapper } from './dto/PingMapper';
+import { FlightEntity } from '../domain/Flight';
 
 export class FlightService {
   private flights: Map<string, FlightEntity> = new Map();
 
-  addOrUpdateFlight(flightData: FlightData): void {
+  addOrUpdateFlight(ping: PingDTO): void {
+    const flightData = PingMapper.toFlightEntity(ping);
     const existingFlight = this.flights.get(flightData.icao24);
 
     if (existingFlight) {
-      existingFlight.updateFromFlightData(flightData);
+      existingFlight.update(flightData);
     } else {
-      const newFlight = FlightEntity.fromFlightData(flightData);
-      this.flights.set(flightData.icao24, newFlight);
+      this.flights.set(flightData.icao24, flightData);
     }
   }
 
@@ -29,6 +31,7 @@ export class FlightService {
   removeInactiveFlights(): void {
     for (const [id, flight] of this.flights.entries()) {
       if (!flight.isActive()) {
+        console.log('removeInactiveFlights: removing flight with id =', id);
         this.flights.delete(id);
       }
     }

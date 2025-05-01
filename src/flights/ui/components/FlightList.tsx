@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FlightEntity } from '../../domain/Flight';  
+import { PingDTO } from '../../application/dto/PingDTO';
 import { FlightMap } from './FlightMap';
 
 const Container = styled.div`
@@ -45,7 +45,7 @@ const FlightInfo = styled.div`
 `;
 
 interface FlightListProps {
-  flights: FlightEntity[];
+  flights: PingDTO[];
   apiKey: string;
 }
 
@@ -56,38 +56,48 @@ const getCardinalDirection = (heading: number): string => {
 };
 
 export const FlightList: React.FC<FlightListProps> = ({ flights, apiKey }) => {
+  const validFlights = flights.filter(flight => 
+    flight &&
+    flight.aircraft &&
+    flight.vector &&
+    flight.position &&
+    typeof flight.position.latitude === 'number' &&
+    !isNaN(flight.position.latitude) &&
+    typeof flight.position.longitude === 'number' &&
+    !isNaN(flight.position.longitude)
+  );
+
   return (
     <Container>
-      <FlightMap flights={flights} apiKey={apiKey} />
+      <FlightMap flights={validFlights} apiKey={apiKey} />
       <ListContainer>
-        {flights.map((flight) => (
-          <FlightCard key={flight.icao24}>
+        {validFlights.map((flight) => (
+          <FlightCard key={flight.aircraft?.icao24 || flight.id}>
             <FlightHeader>
-              <Callsign>{flight.callsign}</Callsign>
+              <Callsign>{flight.aircraft?.callsign || 'UNKNOWN'}</Callsign>
               <span>
-                {flight.onGround ? '🛬 On Ground' : '✈️ In Air'} 
-                {flight.isActive() ? ' 🟢' : ' 🔴'}
+                {flight.position?.on_ground ? '🛬 On Ground' : '✈️ In Air'}
               </span>
             </FlightHeader>
             <FlightInfo>
               <div>
-                <strong>Heading:</strong> {Math.round(flight.trueTrack)}° ({getCardinalDirection(flight.trueTrack)})
+                <strong>Heading:</strong> {flight.vector?.true_track !== undefined ? Math.round(flight.vector.true_track) : 'N/A'}° ({getCardinalDirection(flight.vector?.true_track || 0)})
               </div>
               <div>
-                <strong>Altitude:</strong> {Math.round(flight.altitude)}ft
+                <strong>Altitude:</strong> {flight.position?.geo_altitude !== undefined ? Math.round(flight.position.geo_altitude) : 'N/A'}ft
               </div>
               <div>
-                <strong>Speed:</strong> {Math.round(flight.velocity)}kts
+                <strong>Speed:</strong> {flight.vector?.velocity !== undefined ? Math.round(flight.vector.velocity) : 'N/A'}kts
               </div>
               <div>
-                <strong>Vertical Rate:</strong> {Math.round(flight.verticalRate)}ft/min
+                <strong>Vertical Rate:</strong> {flight.vector?.vertical_rate !== undefined ? Math.round(flight.vector.vertical_rate) : 'N/A'}ft/min
               </div>
               <div>
-                <strong>Position:</strong> {flight.latitude.toFixed(4)}, {flight.longitude.toFixed(4)}
+                <strong>Position:</strong> {flight.position?.latitude?.toFixed(4) || 'N/A'}, {flight.position?.longitude?.toFixed(4) || 'N/A'}
               </div>
               <div>
                 <strong>Last Update:</strong>{' '}
-                {flight.lastUpdate.toLocaleTimeString()}
+                {flight.last_update ? new Date(flight.last_update).toLocaleTimeString() : 'N/A'}
               </div>
             </FlightInfo>
           </FlightCard>
