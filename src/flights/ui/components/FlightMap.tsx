@@ -33,8 +33,8 @@ const mapContainerStyle = {
 };
 
 const defaultCenter = {
-  lat: 0,
-  lng: 0
+  lat: -23.5505, // São Paulo
+  lng: -46.6333
 };
 
 const options = {
@@ -65,13 +65,13 @@ export const FlightMap: React.FC<FlightMapProps> = ({ flights, apiKey }) => {
       });
       
       if (bounds.isEmpty()) {
-        map.setCenter({ lat: -23.5505, lng: -46.6333 }); // São Paulo
+        map.setCenter(defaultCenter);
         map.setZoom(5);
       } else {
         map.fitBounds(bounds);
       }
     } else {
-      map.setCenter({ lat: -23.5505, lng: -46.6333 }); // São Paulo
+      map.setCenter(defaultCenter);
       map.setZoom(5);
     }
   }, [flights]);
@@ -102,7 +102,7 @@ export const FlightMap: React.FC<FlightMapProps> = ({ flights, apiKey }) => {
       <GoogleMap
         mapContainerStyle={mapContainerStyle}
         zoom={5}
-        center={{ lat: -23.5505, lng: -46.6333 }}
+        center={defaultCenter}
         options={options}
         onLoad={onMapLoad}
       >
