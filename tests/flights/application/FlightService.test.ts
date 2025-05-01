@@ -14,7 +14,7 @@ describe('FlightService', () => {
         icao24: 'abc123',
         callsign: 'TEST123',
         origin_country: 'TestCountry',
-        last_contact: Date.now(),
+        last_contact: Math.floor(Date.now() / 1000),
         squawk: '1234',
         spi: false,
         sensors: [1, 2]
@@ -31,9 +31,9 @@ describe('FlightService', () => {
         baro_altitude: 10000,
         on_ground: false,
         source: 1,
-        time: Date.now()
+        time: Math.floor(Date.now() / 1000)
       },
-      last_update: Date.now()
+      last_update: Math.floor(Date.now() / 1000)
     };
   });
 
@@ -80,7 +80,7 @@ describe('FlightService', () => {
       const inactivePing = {
         ...mockPing,
         aircraft: { ...mockPing.aircraft, icao24: 'inactive123' },
-        last_update: Date.now() - 600000 // 10 minutes old
+        last_update: Math.floor((Date.now() - 600000) / 1000) // 10 minutes old in seconds
       };
       flightService.addOrUpdateFlight(mockPing);
       flightService.addOrUpdateFlight(inactivePing);
@@ -109,7 +109,7 @@ describe('FlightService', () => {
       const inactivePing = {
         ...mockPing,
         aircraft: { ...mockPing.aircraft, icao24: 'inactive123' },
-        last_update: Date.now() - 600000 // 10 minutes old
+        last_update: Math.floor((Date.now() - 600000) / 1000) // 10 minutes old in seconds
       };
       flightService.addOrUpdateFlight(mockPing);
       flightService.addOrUpdateFlight(inactivePing);

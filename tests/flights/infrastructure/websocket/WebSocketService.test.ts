@@ -1,5 +1,5 @@
 import { WebSocketService } from '../../../../src/flights/infrastructure/websocket/WebSocketService';
-import { FlightData } from '../../../../src/flights/domain/Flight';
+import { PingDTO } from '../../../../src/flights/application/dto/PingDTO';
 
 // Mock Vite's import.meta.env
 jest.mock('../../../../src/flights/infrastructure/websocket/WebSocketService', () => {
@@ -104,7 +104,7 @@ describe('WebSocketService', () => {
 
   describe('message handling', () => {
     it('should handle message subscription and unsubscription', () => {
-      const handler = (data: FlightData) => {};
+      const handler = (data: PingDTO) => {};
       webSocketService.connect();
       jest.runAllTimers();
       
@@ -114,18 +114,31 @@ describe('WebSocketService', () => {
 
     it('should process incoming messages', () => {
       const mockData = {
-        ping_id: '123',
-        icao24: 'abc123',
-        callsign: 'TEST123',
-        latitude: 37.7749,
-        longitude: -122.4194,
-        geo_altitude: 10000,
-        baro_altitude: 10000,
-        on_ground: false,
-        velocity: 500,
-        vertical_rate: 0,
-        true_track: 90,
-        timestamp: Math.floor(Date.now() / 1000)
+        id: '123',
+        aircraft: {
+          icao24: 'abc123',
+          callsign: 'TEST123',
+          origin_country: 'US',
+          last_contact: Math.floor(Date.now() / 1000),
+          squawk: '1234',
+          spi: false,
+          sensors: []
+        },
+        vector: {
+          velocity: 500,
+          true_track: 90,
+          vertical_rate: 0
+        },
+        position: {
+          longitude: -122.4194,
+          latitude: 37.7749,
+          geo_altitude: 10000,
+          baro_altitude: 10000,
+          on_ground: false,
+          source: 1,
+          time: Math.floor(Date.now() / 1000)
+        },
+        last_update: Math.floor(Date.now() / 1000)
       };
 
       const handler = jest.fn();

@@ -9,7 +9,7 @@ describe('FlightEntity', () => {
       icao24: 'abc123',
       callsign: 'TEST123',
       origin_country: 'TestCountry',
-      last_contact: Date.now(),
+      last_contact: Math.floor(Date.now() / 1000),
       squawk: '1234',
       spi: false,
       sensors: [1, 2]
@@ -26,9 +26,9 @@ describe('FlightEntity', () => {
       baro_altitude: 34800,
       on_ground: false,
       source: 1,
-      time: Date.now()
+      time: Math.floor(Date.now() / 1000)
     },
-    last_update: Date.now()
+    last_update: Math.floor(Date.now() / 1000)
   };
 
   it('should create a flight entity from PingDTO', () => {
@@ -79,7 +79,7 @@ describe('FlightEntity', () => {
     // Create a flight with old timestamp (more than 5 minutes ago)
     const oldPing: PingDTO = {
       ...mockPing,
-      last_update: Date.now() - 400 * 1000
+      last_update: Math.floor((Date.now() - 400 * 1000) / 1000)
     };
     const oldFlight = PingMapper.toFlightEntity(oldPing);
     expect(oldFlight.isActive()).toBe(false);

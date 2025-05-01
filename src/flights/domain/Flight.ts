@@ -20,9 +20,8 @@ export class FlightEntity {
   ) {}
 
   isActive(): boolean {
-    const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
-    const isActive = this.lastUpdate > fiveMinutesAgo;  
-    return isActive;
+    const fiveMinutesAgo = Date.now() - 5 * 60 * 1000;
+    return this.lastUpdate.getTime() > fiveMinutesAgo;
   }
 
   getPosition(): { latitude: number; longitude: number; geoAltitude: number; baroAltitude: number } {
